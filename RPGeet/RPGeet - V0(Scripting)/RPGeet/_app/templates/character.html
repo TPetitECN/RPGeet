@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>{{ stats.Name }}</h2>
+<a href="{{ url_for('view_game', game_id=game_id) }}">Back to Game</a>
+
+<table border="1">
+    <tr>
+        <th>Attribute</th>
+        <th>Value</th>
+    </tr>
+    {% for key, value in stats.items() %}
+    <tr>
+        <td>{{ key }}</td>
+        <td>{{ value }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

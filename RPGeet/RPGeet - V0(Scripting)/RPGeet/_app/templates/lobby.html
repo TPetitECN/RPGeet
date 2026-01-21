@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Lobby</h2>
+<p>Welcome, {{ username }}!</p>
+
+<h3>Your Games</h3>
+<ul>
+    {% for game in games %}
+    <li>
+        <a href="{{ url_for('view_game', game_id=game.game_id) }}">{{ game.name }}</a>
+        {% if game.gamemaster %} (GM) {% else %} (Player) {% endif %}
+    </li>
+    {% else %}
+    <li>No games found.</li>
+    {% endfor %}
+</ul>
+
+<h3>Create New Game</h3>
+<form action="{{ url_for('create_game') }}" method="post">
+    <input type="text" name="name" placeholder="Game Name" required>
+    <button type="submit">Create Game</button>
+</form>
+
+<h3>Join Game</h3>
+<form id="join-form" method="post">
+    <input type="number" id="game_id_input" placeholder="Game ID" required>
+    <button type="button" onclick="submitJoin()">Join Game</button>
+</form>
+
+<script>
+function submitJoin() {
+    var gameId = document.getElementById('game_id_input').value;
+    var form = document.getElementById('join-form');
+    form.action = "/game/" + gameId + "/join";
+    form.submit();
+}
+</script>
+{% endblock %}
