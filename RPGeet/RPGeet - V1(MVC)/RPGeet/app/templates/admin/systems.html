@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Schema</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for s in systems %}
+        <tr>
+            <td>{{ s.name }}</td>
+            <td><code>{{ s.schema_name }}</code></td>
+            <td>
+                <a href="{{ url_for('admin.edit_system', system_id=s.system_id) }}">Modify</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<a href="{{ url_for('admin.edit_system') }}">Add New System</a>
+{% endblock %}

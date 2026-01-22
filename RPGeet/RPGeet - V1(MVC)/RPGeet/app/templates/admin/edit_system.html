@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>{{ 'Edit' if system else 'Create' }} Game System</h2>
+
+<form action="{{ url_for('admin.edit_system', system_id=system.system_id) if system else url_for('admin.edit_system') }}" method="post">
+    <div style="display: flex; gap: 20px; align-items: flex-end; margin-bottom: 10px;">
+        <div style="flex: 1;">
+            <label style="display: block; font-weight: bold;">System Name:</label>
+            <input type="text" name="name" style="width: 100%;" value="{{ system.name if system else '' }}" required>
+        </div>
+        
+        <div style="flex: 1;">
+            <label style="display: block; font-weight: bold;">Database Schema Name:</label>
+            <input type="text" name="schema_name" style="width: 100%;" 
+                  value="{{ system.schema_name if system else '' }}" 
+                  {{ 'readonly' if system else '' }} required>
+        </div>
+
+        <div>
+            <button type="submit">{{ 'Save Changes' if system else 'Create System' }}</button>
+            <button type="button" onclick="window.location.href='{{ url_for('admin.list_systems') }}'">Cancel</button>
+        </div>
+    </div>
+
+    <div style="margin-bottom: 20px;">
+        <small style="color: #666;">Note: The schema name cannot be changed after creation.</small>
+    </div>
+</form>
+
+<hr>
+
+{% if system and system.system_id %}
+    <h3>Sources for this system</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Source Name</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for source in sources %}
+            <tr>
+                <td>{{ source.name }}</td>
+                <td>
+                    <form action="{{ url_for('admin.delete_source', source_id=source.source_id) }}" method="post" style="display:inline;">
+                        <button type="submit" onclick="return confirm('Delete this source?')">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="2">No sources found for this system.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    <div style="margin-top: 20px;">
+        <h4>Add a new source</h4>
+        <form action="{{ url_for('admin.add_source', system_id=system.system_id) }}" method="post">
+            <input type="text" name="source_name" placeholder="Source Name (ex: Player's Handbook)" required>
+            <button type="submit">Add Source</button>
+        </form>
+    </div>
+{% else %}
+    <div style="margin-top: 20px; color: gray; border: 1px dashed #ccc; padding: 10px;">
+        <i>You will be able to add sources after creating the system.</i>
+    </div>
+{% endif %}
+
+{% endblock %}

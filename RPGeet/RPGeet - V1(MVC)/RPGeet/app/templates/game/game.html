@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Game: {{ game.name }}</h2>
+<a href="{{ url_for('main.lobby') }}">Back to Lobby</a>
+
+<h3>Characters</h3>
+<ul>
+    {% for char in characters %}
+    <li>
+        <a href="{{ url_for('character.view_character', game_id=game.game_id, character_id=char.character_id) }}">{{ char.name }}</a>
+        (Player: {{ char.username }})
+    </li>
+    {% else %}
+    <li>No characters found.</li>
+    {% endfor %}
+</ul>
+
+<h3>Create Character</h3>
+<form action="{{ url_for('character.create_character', game_id=game.game_id) }}" method="post">
+    <input type="text" name="name" placeholder="Character Name" required>
+    <button type="submit">Create Character</button>
+</form>
+
+<h3>Tools</h3>
+<a href="{{ url_for('combat.combat', game_id=game.game_id) }}">Open Combat Tracker</a>
+{% endblock %}

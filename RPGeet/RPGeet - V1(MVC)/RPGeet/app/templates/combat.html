@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Combat Tracker (Game {{ game_id }})</h2>
+<a href="{{ url_for('game.view_game', game_id=game_id) }}">Back to Game</a>
+
+<h3>Turn: {{ state.turn }}</h3>
+
+<form action="{{ url_for('combat.combat_next', game_id=game_id) }}" method="post">
+    <button type="submit">Next Turn</button>
+</form>
+
+<table border="1">
+    <tr>
+        <th>Initiative</th>
+        <th>Name</th>
+        <th>Active Effects</th>
+        <th>Add Effect</th>
+    </tr>
+    {% for p in state.participants %}
+    <tr>
+        <td>{{ p.initiative }}</td>
+        <td>{{ p.name }}</td>
+        <td>
+            {% for e in p.effects %}
+                {{ e.name }} ({{ e.duration }} rnds)<br>
+            {% endfor %}
+        </td>
+        <td>
+            <form action="{{ url_for('combat.combat_effect', game_id=game_id) }}" method="post">
+                <input type="hidden" name="participant" value="{{ p.name }}">
+                <input type="text" name="effect" placeholder="Effect Name" required>
+                <input type="number" name="duration" placeholder="Duration" value="1" style="width: 50px;" required>
+                <button type="submit">+</button>
+            </form>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+<h3>Add Participant</h3>
+<form action="{{ url_for('combat.combat_add', game_id=game_id) }}" method="post">
+    <input type="text" name="name" placeholder="Name" required>
+    <input type="number" name="initiative" placeholder="Initiative" required>
+    <button type="submit">Add</button>
+</form>
+{% endblock %}

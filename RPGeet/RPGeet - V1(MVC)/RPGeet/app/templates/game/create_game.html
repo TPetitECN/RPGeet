@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Create New Game</h2>
+<a href="{{ url_for('main.lobby') }}">Back to Lobby</a>
+<form method="post">
+    <input type="text" name="name" value="{{ prev_name if prev_name else '' }}" placeholder="Game Name" required>
+    
+    <label for="system_id">Choose a System:</label>
+    <select name="system_id" id="system_id" required onchange="filterSources()">
+        <option value="" disabled {{ 'selected' if not prev_system }}>Select a system</option>
+        
+        {% for system in systems %}
+        <option value="{{ system.system_id }}" 
+                {{ 'selected' if prev_system and prev_system|int == system.system_id }}>
+            {{ system.name }}
+        </option>
+        {% endfor %}
+    </select>
+
+    <div id="sources-container" style="margin-top: 20px;">
+        <label>Select Authorized Sources:</label>
+        <div id="sources-list" style="border: 1px solid #ccc; padding: 10px; max-height: 200px; overflow-y: auto;">
+            <p style="color: gray;">Please select a system first...</p>
+        </div>
+    </div>
+
+    <button type="submit" style="margin-top: 20px;">Create Game</button>
+</form>
+
+<script>
+// We transfer all sources data to JavaScript
+const allSources = {{ sources_json | safe }};
+
+function filterSources() {
+    const systemId = document.getElementById('system_id').value;
+    const listContainer = document.getElementById('sources-list');
+    listContainer.innerHTML = ''; // Empty the list
+
+    // Filter sources based on selected system
+    const filtered = allSources.filter(s => s.system_id == systemId);
+
+    if (filtered.length === 0) {
+        listContainer.innerHTML = '<p>No sources found for this system.</p>';
+        return;
+    }
+
+    filtered.forEach(source => {
+        const item = document.createElement('div');
+        item.innerHTML = `
+            <label>
+                <input type="checkbox" name="source_ids" value="${source.source_id}">
+                ${source.name}
+            </label>
+        `;
+        listContainer.appendChild(item);
+    });
+}
+</script>
+{% endblock %}

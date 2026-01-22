@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Your Characters</h2>
+<a href="{{ url_for('main.lobby') }}">Back to Lobby</a>
+
+<ul>
+    {% if characters %}
+        {% for char in characters %}
+        <li>
+            <strong>{{ char.name }}</strong> - Game: <a href="{{ url_for('game.view_game', game_id=char.game_id) }}">{{ char.game_name }}</a>
+            - <a href="{{ url_for('character.view_character', game_id=char.game_id, character_id=char.id) }}">View Sheet</a>
+        </li>
+        {% endfor %}
+    {% else %}
+        <li>You have no characters yet. <a href="{{ url_for('game.create_game_view') }}">Create or Join a Game</a> to start!</li>
+    {% endif %}
+</ul>
+{% endblock %}
